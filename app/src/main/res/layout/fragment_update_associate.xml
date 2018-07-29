@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/b2"
+    android:padding="15dp"
+    tools:context=".Fragments.UpdateAssociateFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+        android:id="@+id/edt_Name"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ "
+        android:hint="Enter Name here"
+        android:padding="10dp"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btn_Search"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/edt_Name"
+        android:padding="10dp"
+        android:text="Search" />
+
+    <TextView
+        android:id="@+id/lbl_MobileNumber"
+        android:layout_width="125dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edt_Name"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="Mobile Number"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edt_MobileNumber"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/edt_Name"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/lbl_MobileNumber"
+        android:digits="0123456789"
+        android:hint="Mobile Number"
+        android:imeOptions="actionNext"
+        android:inputType="number"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/lbl_Department"
+        android:layout_width="125dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edt_MobileNumber"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="Department"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/spn_Department"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/edt_MobileNumber"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/lbl_MobileNumber"
+        android:entries="@array/departments"
+        android:imeOptions="actionNext"
+        android:nextFocusDown="@+id/edt_Salary"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/lbl_Salary"
+        android:layout_width="125dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spn_Department"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:text="Salary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/edt_Salary"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/spn_Department"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/lbl_Salary"
+        android:digits="0123456789"
+        android:hint="Salary"
+        android:imeOptions="actionNext"
+        android:inputType="number"
+        android:padding="10dp" />
+
+    <Button
+        android:id="@+id/btn_Update"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@id/edt_Salary"
+        android:padding="10dp"
+        android:text="Update" />
+
+    <Button
+        android:id="@+id/btn_Clear"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@id/edt_Salary"
+        android:layout_toRightOf="@id/btn_Update"
+        android:padding="10dp"
+        android:text="Clear" />
+
+
+</RelativeLayout>

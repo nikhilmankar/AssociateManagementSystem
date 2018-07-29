@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_Add"
+        android:icon="@drawable/add"
+        android:title="Add Associate" />
+
+    <item
+        android:id="@+id/navigation_Update"
+        android:icon="@drawable/edit"
+        android:title="Update Associate" />
+
+    <item
+        android:id="@+id/navigation_View"
+        android:icon="@drawable/view"
+        android:title="View Associates" />
+
+</menu>

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name"><font size="18">ASSOCIATE MANAGEMENT SYSTEM</font></string>
+
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <array name="departments">
+        <item>Technical</item>
+        <item>Support</item>
+        <item>Research and Development</item>
+        <item>Marketing</item>
+        <item>Human Resource</item>
+    </array>
+</resources>
