@@ -4,11 +4,13 @@ package com.felix.nikhil.associatemanagementsystem.Fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -22,6 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,7 +79,7 @@ public class UpdateAssociateFragment extends Fragment {
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Associate associate= dataSnapshot.getValue(Associate.class);
+                        Associate associate= dataSnapshot.getValue(String.class).getValue(Associate.class);
                         if (associate==null){
                             Log.e("Not found","Data not found");
                         }
@@ -100,9 +105,16 @@ public class UpdateAssociateFragment extends Fragment {
                                 if (associate==null){
                                     Log.e("Not found","Data not found");
                                 }
-                                Log.e("record found", "User data is found!" + associate.getName() + ", " + associate.getMobilenumber() + ", " + associate.getSalary());
+                                //Log.e("record found", "User data is found!" + associate.getName() + ", " + associate.getMobilenumber() + ", " + associate.getSalary());
                                 String mobile=associate.mobilenumber;
+                                String designation=associate.department;
                                 String salary=associate.salary;
+                                ArrayAdapter myAdap = (ArrayAdapter) spnDepartment.getAdapter(); //cast to an ArrayAdapter
+
+                                int spinnerPosition = myAdap.getPosition(designation);
+
+                                //set the default according to value
+                                spnDepartment.setSelection(spinnerPosition);
                                 edtMobileNumber.setText(mobile);
                                 edtSalary.setText(salary);
                             }
@@ -121,13 +133,64 @@ public class UpdateAssociateFragment extends Fragment {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*     mFirebaseDatabase.child(userId).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(String.class);
 
-                // Check for null
-                if (user == null) {
+                final String name = edtName.getText().toString();
+                final String mobilenumber = edtMobileNumber.getText().toString();
+                final String department = spnDepartment.getSelectedItem().toString();
+                final String salary = edtSalary.getText().toString().trim();
+
+                if (name.isEmpty()) {
+                    edtName.setError("Please enter a name");
+                    edtName.requestFocus();
+                    return;
+                }
+                if (TextUtils.isDigitsOnly(name)) {
+                    edtName.setError("Please enter a name in alphabets");
+                    edtName.requestFocus();
+                    return;
+                }
+                if (mobilenumber.isEmpty()) {
+                    edtMobileNumber.setError("Please enter a mobile number");
+                    edtMobileNumber.requestFocus();
+                    return;
+                }
+                if (salary.isEmpty() || Integer.parseInt(salary) <= 0) {
+                    edtSalary.setError("Please enter salary");
+                    edtSalary.requestFocus();
+                    return;
+                }
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                final DatabaseReference reference = firebaseDatabase.getReference("Associates");
+                //Query updateQuery = reference.child("name").orderByKey().equalTo(name);
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            if(snapshot.child("name").getValue(String.class).equals(name)){
+                                Associate associate = snapshot.getValue(Associate.class);
+                                String key = snapshot.getKey();
+                                if (associate==null){
+                                    Log.e("Not found","Data not found");
+                                    return;
+                                }
+                                Log.e("record found", "User data is found!" + associate.getName() + ", " + associate.getMobilenumber() + ", " + associate.getSalary());
+                                associate.setDepartment(department);
+                                associate.setMobilenumber(mobilenumber);
+                                associate.setSalary(salary);
+                                reference.child(key).setValue(associate);
+                                //mFirebaseDatabase.child(associateId).setValue(associate);
+                                Toast.makeText(getActivity(), "associate updated successfully ", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("Read failed", "Failed to read user", databaseError.toException());
+                    }
+                });
+                /*
+                if (associate == null) {
                     Log.e("Data Null", "User data is null!");
                     return;
                 }
