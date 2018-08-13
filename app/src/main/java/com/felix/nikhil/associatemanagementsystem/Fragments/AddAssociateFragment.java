@@ -1,6 +1,7 @@
 package com.felix.nikhil.associatemanagementsystem.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -34,7 +35,7 @@ public class AddAssociateFragment extends Fragment {
     public String userId;
     public DatabaseReference mFirebaseDatabase;
     public FirebaseDatabase mFirebaseInstance;
-
+    ProgressDialog pd;
     public String associateId;
 
     public AddAssociateFragment() {
@@ -57,6 +58,7 @@ public class AddAssociateFragment extends Fragment {
         btnSave = view.findViewById(R.id.btn_Save);
         btnClear = view.findViewById(R.id.btn_Clear);
         //Toast.makeText(getActivity(), "fragment_add_associates", Toast.LENGTH_LONG).show();
+        pd = new ProgressDialog(getActivity());
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
 
@@ -79,6 +81,7 @@ public class AddAssociateFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+                pd.dismiss();
                 Log.e("Failed", "Failed to read app title value.", databaseError.toException());
             }
         });
@@ -90,6 +93,7 @@ public class AddAssociateFragment extends Fragment {
                 String mobilenumber = edtMobileNumber.getText().toString();
                 String department = spnDepartment.getSelectedItem().toString();
                 String salary = edtSalary.getText().toString().trim();
+
 
 
                 if (name.isEmpty()) {
@@ -112,7 +116,8 @@ public class AddAssociateFragment extends Fragment {
                     edtSalary.requestFocus();
                     return;
                 }
-
+                pd.setMessage("Please wait..");
+                pd.show();
                 // Check for already existed userId
                 AddAssociate(name, mobilenumber, department, salary);
 
@@ -142,6 +147,7 @@ public class AddAssociateFragment extends Fragment {
         }
 
         mFirebaseDatabase.child(associateId).setValue(associate);
+        pd.dismiss();
         Toast.makeText(getActivity(), "associate added successfully ", Toast.LENGTH_LONG).show();
         edtName.setText("");
         edtMobileNumber.setText("");

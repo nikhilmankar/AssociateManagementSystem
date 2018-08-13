@@ -1,9 +1,8 @@
 package com.felix.nikhil.associatemanagementsystem;
 
-import com.google.firebase.database.IgnoreExtraProperties;
 
-@IgnoreExtraProperties
 public class Associate {
+    public String name, mobilenumber, department, salary;
 
     public String getName() {
         return name;
@@ -37,9 +36,8 @@ public class Associate {
         this.salary = salary;
     }
 
-    public String name,mobilenumber,department,salary;
 
-    public Associate(){
+    public Associate() {
         //empty constructer
     }
 

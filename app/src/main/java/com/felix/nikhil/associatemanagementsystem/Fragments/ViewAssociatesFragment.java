@@ -1,27 +1,26 @@
 package com.felix.nikhil.associatemanagementsystem.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.Snapshot;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 
 import com.felix.nikhil.associatemanagementsystem.Associate;
-import com.felix.nikhil.associatemanagementsystem.AssociateListAdapter;
-import com.felix.nikhil.associatemanagementsystem.AssociateListViewHolder;
 import com.felix.nikhil.associatemanagementsystem.R;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,13 +29,19 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ViewAssociatesFragment extends Fragment {
 
-    private RecyclerView rView;
 
+    ArrayList<Associate> displayArray;
+    ArrayList<Associate> keysArray;
+    ArrayAdapter<Associate> valuesAdapter;
+    ListView listView;
+    ProgressDialog pd;
     private DatabaseReference databaseReference;
 
     //private FirebaseRecyclerAdapter<Associate, AssociateListViewHolder> firebaseRecyclerAdapter;
@@ -51,55 +56,50 @@ public class ViewAssociatesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_associates, container, false);
-        rView = view.findViewById(R.id.rvAssociate);
+        listView = view.findViewById(R.id.listView1);
+        pd = new ProgressDialog(getActivity());
+        pd.setMessage("Please wait ..");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Associates");
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Associate");
+
+        displayArray = new ArrayList<>();
+        keysArray = new ArrayList<>();
+        valuesAdapter = new ArrayAdapter<Associate>(getActivity(), R.layout.item_associate_list, displayArray);
+        listView.setAdapter(valuesAdapter);
+
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<Associate> associateArrayList = new ArrayList<>();
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    Associate associate = snapshot.getValue(Associate.class);
 
-                    Associate associate = dataSnapshot1.getValue(Associate.class);
-                    Associate associate1 = new Associate();
+                    displayArray.add(associate);
 
-                    String name = associate.getName();
-                    String mobile = associate.getMobilenumber();
-                    String department = associate.getDepartment();
-                    String salary = associate.getSalary();
-                    associate1.setName(name);
-                    associate1.setMobilenumber(mobile);
-                    associate1.setDepartment(department);
-                    associate1.setSalary(salary);
-                    associateArrayList.add(associate1);
-                    Log.e("record found", "User data is found!" + name + ", " + mobile + ", " + department + ", " + salary);
-
+                    Toast.makeText(getActivity(), "Name "+associate.getName()+associate.getMobilenumber()+associate.getDepartment()+associate.getSalary() ,Toast.LENGTH_SHORT).show();
 
                 }
-                AssociateListAdapter associateListAdapter = new AssociateListAdapter(associateArrayList);
-                //rView.LayoutManager layoutmanager = new LinearLayoutManager(getActivity());
-                rView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                //rView.setLayoutManager(layoutmanager);
 
-                rView.setItemAnimator(new DefaultItemAnimator());
-                rView.setAdapter(associateListAdapter);
 
+                pd.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                pd.dismiss();
             }
         });
 
- /*       ArrayList<Associate> associateArrayList = new ArrayList<>();
-        AssociateListAdapter associateListAdapter=new AssociateListAdapter(associateArrayList);
-        rView.setLayoutManager(new LinearLayoutManager(this));
 
-        rView.setAdapter(associateListAdapter);*/
-        //Toast.makeText(getActivity(), "fragment_view_associates", Toast.LENGTH_LONG).show();
         return view;
     }
+
+    private void updateListView() {
+        valuesAdapter.notifyDataSetChanged();
+        listView.invalidate();
+        Log.d(TAG, "Length: " + displayArray.size());
+    }
+
+
 
 }

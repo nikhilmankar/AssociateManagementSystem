@@ -14,6 +14,7 @@ public class AssociateListAdapter extends RecyclerView.Adapter<AssociateListView
     public AssociateListAdapter(ArrayList<Associate> associateArrayList){
         this.associateArrayList=associateArrayList;
     }
+
     @NonNull
     @Override
     public AssociateListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

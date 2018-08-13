@@ -1,6 +1,7 @@
 package com.felix.nikhil.associatemanagementsystem.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -38,7 +39,7 @@ public class UpdateAssociateFragment extends Fragment {
     public String userId;
     public DatabaseReference mFirebaseDatabase;
     public FirebaseDatabase mFirebaseInstance;
-
+    ProgressDialog pd;
     public String associateId;
 
     public UpdateAssociateFragment() {
@@ -51,7 +52,7 @@ public class UpdateAssociateFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_update_associate, container, false);
-        Toast.makeText(getActivity(), "fragment_update_associates", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), "fragment_update_associates", Toast.LENGTH_LONG).show();
 
         edtName = view.findViewById(R.id.edt_Name);
         edtMobileNumber = view.findViewById(R.id.edt_MobileNumber);
@@ -60,7 +61,8 @@ public class UpdateAssociateFragment extends Fragment {
         btnSearch = view.findViewById(R.id.btn_Search);
         btnUpdate = view.findViewById(R.id.btn_Update);
         btnClear = view.findViewById(R.id.btn_Clear);
-
+        pd = new ProgressDialog(getActivity());
+        pd.setMessage("Please wait ..");
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +73,7 @@ public class UpdateAssociateFragment extends Fragment {
                     edtName.requestFocus();
                     return;
                 }
+                pd.show();
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 final DatabaseReference reference = firebaseDatabase.getReference("Associates");
                 //reference.child("Associates").orderByChild("name").equalTo(Name);
@@ -99,16 +102,16 @@ public class UpdateAssociateFragment extends Fragment {
                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                            if(snapshot.child("name").getValue(String.class).equals(Name)){
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            if (snapshot.child("name").getValue(String.class).equals(Name)) {
                                 Associate associate = snapshot.getValue(Associate.class);
-                                if (associate==null){
-                                    Log.e("Not found","Data not found");
+                                if (associate == null) {
+                                    Log.e("Not found", "Data not found");
                                 }
                                 //Log.e("record found", "User data is found!" + associate.getName() + ", " + associate.getMobilenumber() + ", " + associate.getSalary());
-                                String mobile=associate.mobilenumber;
-                                String designation=associate.department;
-                                String salary=associate.salary;
+                                String mobile = associate.mobilenumber;
+                                String designation = associate.department;
+                                String salary = associate.salary;
                                 ArrayAdapter myAdap = (ArrayAdapter) spnDepartment.getAdapter(); //cast to an ArrayAdapter
 
                                 int spinnerPosition = myAdap.getPosition(designation);
@@ -117,12 +120,14 @@ public class UpdateAssociateFragment extends Fragment {
                                 spnDepartment.setSelection(spinnerPosition);
                                 edtMobileNumber.setText(mobile);
                                 edtSalary.setText(salary);
+                                pd.dismiss();
                             }
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
+                        pd.dismiss();
                         Log.e("Read failed", "Failed to read user", databaseError.toException());
                     }
                 });
@@ -159,18 +164,19 @@ public class UpdateAssociateFragment extends Fragment {
                     edtSalary.requestFocus();
                     return;
                 }
+                pd.show();
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 final DatabaseReference reference = firebaseDatabase.getReference("Associates");
                 //Query updateQuery = reference.child("name").orderByKey().equalTo(name);
                 reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                            if(snapshot.child("name").getValue(String.class).equals(name)){
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            if (snapshot.child("name").getValue(String.class).equals(name)) {
                                 Associate associate = snapshot.getValue(Associate.class);
                                 String key = snapshot.getKey();
-                                if (associate==null){
-                                    Log.e("Not found","Data not found");
+                                if (associate == null) {
+                                    Log.e("Not found", "Data not found");
                                     return;
                                 }
                                 Log.e("record found", "User data is found!" + associate.getName() + ", " + associate.getMobilenumber() + ", " + associate.getSalary());
@@ -179,6 +185,7 @@ public class UpdateAssociateFragment extends Fragment {
                                 associate.setSalary(salary);
                                 reference.child(key).setValue(associate);
                                 //mFirebaseDatabase.child(associateId).setValue(associate);
+                                pd.dismiss();
                                 Toast.makeText(getActivity(), "associate updated successfully ", Toast.LENGTH_LONG).show();
                             }
                         }
@@ -186,6 +193,7 @@ public class UpdateAssociateFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
+                        pd.dismiss();
                         Log.e("Read failed", "Failed to read user", databaseError.toException());
                     }
                 });
