@@ -7,11 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AssociateListAdapter extends RecyclerView.Adapter<AssociateListViewHolder>{
 
-    ArrayList<Associate> associateArrayList;
-    public AssociateListAdapter(ArrayList<Associate> associateArrayList){
+    List<Associate> associateArrayList;
+    public AssociateListAdapter(List<Associate> associateArrayList){
         this.associateArrayList=associateArrayList;
     }
 
